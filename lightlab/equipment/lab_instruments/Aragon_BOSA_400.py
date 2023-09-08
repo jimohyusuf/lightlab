@@ -52,9 +52,9 @@ class Aragon_BOSA_400 (VISAInstrumentDriver):
         VISAInstrumentDriver.__init__(self, name=name, address=address, **kwargs)
         self.interface = self._session_object
         
-        if True: # TODO: detect if using prologix
-            old_startup = self.interface._prologix_rm.startup
-            self.interface._prologix_rm.startup = patch_startup(old_startup)
+        # if True: # TODO: detect if using prologix
+        #     old_startup = self.interface._prologix_rm.startup
+        #     self.interface._prologix_rm.startup = patch_startup(old_startup)
 
     def stop(self):
         self.__currApp = str(self.ask('INST:STAT:MODE?'))

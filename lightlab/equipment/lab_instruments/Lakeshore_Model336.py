@@ -148,28 +148,28 @@ class Lakeshore_Model336(VISAInstrumentDriver):
         else:
             return self.query('HTRSET? {}'.format(output))
         
-     def heaterSet(self, output, resistance, maxcurrent, maxcurrentuser, currentPower):
-         outputs = [1,2]
-            resistance = [1,2]
-            maxcurrent = [0,1,2,3,4]
-            currentPower = [1,2]
+#      def heaterSet(self, output, resistance, maxcurrent, maxcurrentuser, currentPower):
+#          outputs = [1,2]
+#             resistance = [1,2]
+#             maxcurrent = [0,1,2,3,4]
+#             currentPower = [1,2]
             
         
-         if output not in outputs:
-             raise ValueError('output is {} but must be integer 1, or 2'.format(output))
-        elif resistance not in resistance:
-            raise ValueError('resistance is {} but must be integer 1, or 2'.format(output))
-        elif resistance not in resistance:
-            raise ValueError('resistance is {} but must be integer 0, 1, 2, 3, or 4'.format(output))
-        elif currentPower not in currentPower:
-            raise ValueError('resistance is {} but must be integer 1, or 2'.format(output))
+#         if output not in outputs:
+#              raise ValueError('output is {} but must be integer 1, or 2'.format(output))
+#         elif resistance not in resistance:
+#             raise ValueError('resistance is {} but must be integer 1, or 2'.format(output))
+#         elif resistance not in resistance:
+#             raise ValueError('resistance is {} but must be integer 0, 1, 2, 3, or 4'.format(output))
+#         elif currentPower not in currentPower:
+#             raise ValueError('resistance is {} but must be integer 1, or 2'.format(output))
             
-        elif (maxcurrent not 0): 
-            maxcurrentuser = 0
-        elif (maxcurrent = 0)
-            maxcurrentuser = maxcurrentuser 
-         else:
-             return self.query('HTRSET {} {} {} {} {}'.format(output, resistance, maxcurrent, maxcurrentuser, currentPower))
+#         elif (maxcurrent not 0): 
+#             maxcurrentuser = 0
+#         elif (maxcurrent = 0)
+#             maxcurrentuser = maxcurrentuser 
+#         else:
+#              return self.query('HTRSET {} {} {} {} {}'.format(output, resistance, maxcurrent, maxcurrentuser, currentPower))
         
     def heaterStatus(self, output):
         outputs = [1,2]
