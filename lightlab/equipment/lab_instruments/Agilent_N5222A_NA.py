@@ -198,11 +198,11 @@ class Agilent_N5222A_NA(VISAInstrumentDriver, Configurable):
         # raise NotImplementedError('not working')
         # self.setConfigParam('SENS:SWE:GRO:COUN', nGroups)
 
-        self.setConfigParam('SENS:SWE:MODE', 'HOLD')
-        self.write('SENS:SWE:MODE SING')
-        self.query('*OPC?')
+        # self.setConfigParam('SENS:SWE:MODE', 'HOLD')
+        # self.write('SENS:SWE:MODE SING')
+        # self.query('*OPC?')
 
-        self.setConfigParam('FORM', 'ASC')
+        # self.setConfigParam('FORM', 'ASC')
 
         self.open()
         dbm = self.query_ascii_values('CALC{}:DATA? FDATA'.format(self.chanNum))
