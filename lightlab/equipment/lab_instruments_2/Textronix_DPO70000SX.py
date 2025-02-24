@@ -1,7 +1,6 @@
 import pyvisa  # Should be pyvisa-py
 import numpy as np
 import matplotlib.pyplot as plt
-# from utils.utils import wait
 
 VERBOSE = 0
 
@@ -53,13 +52,13 @@ class Oscilloscope:
         self.raw_write('MEASUREMENT:STATISTICS:COUNT RESET')
         return
     
-    def restart_acquisition_avg_mode(self):
+    def restart_acquisition_avg_mode(self, avg_no=64):
         # avg_no = int(self.raw_query('ACQuire:NUMAVg?'))
         # self.raw_write(f'ACQuire:NUMAVg {avg_no+1}')
         # self.raw_write(f'ACQuire:NUMAVg {avg_no}')
 
-        self.raw_write(f'ACQuire:NUMAVg {65}')
-        self.raw_write(f'ACQuire:NUMAVg {64}')
+        self.raw_write(f'ACQuire:NUMAVg {avg_no+1}') # hack to reset the averaging
+        self.raw_write(f'ACQuire:NUMAVg {avg_no}')
 
         return
     
@@ -188,15 +187,15 @@ class ScopeRead:
             index = np.argmax(self.amplitudes[min_index:max_index]) + min_index
         return self.amplitudes[index]/len(self.times), self.frequencies[index], self.phases[index]
 
-    def plot(self, with_fit=False):
-        plt.plot(self.times*1e6, self.voltages*1000, label="Data")
-        plt.xlabel("Time (us)")
-        plt.ylabel("Voltage (mV)")
-        if with_fit:
-            popt = self.get_fit()
-            plt.plot(self.times*1e6, model(self.times, *popt)*1000, label="Fit")
-            plt.legend()
-            plt.title(f"$v(t)={popt[0]*1000:.4f}sin(2\pi({popt[1]/1e6:.4f})t + {popt[2]:.2f})$")
+    # def plot(self, with_fit=False):
+    #     plt.plot(self.times*1e6, self.voltages*1000, label="Data")
+    #     plt.xlabel("Time (us)")
+    #     plt.ylabel("Voltage (mV)")
+    #     if with_fit:
+    #         popt = self.get_fit()
+    #         plt.plot(self.times*1e6, model(self.times, *popt)*1000, label="Fit")
+    #         plt.legend()
+    #         plt.title(f"$v(t)={popt[0]*1000:.4f}sin(2\pi({popt[1]/1e6:.4f})t + {popt[2]:.2f})$")
 
     def plot_fft(self, normalize=False, guess_freq = None):
         if self.frequencies is None:
