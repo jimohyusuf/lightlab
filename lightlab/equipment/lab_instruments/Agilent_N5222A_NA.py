@@ -126,7 +126,6 @@ class Agilent_N5222A_NA(VISAInstrumentDriver, Configurable):
         self.getSwpDuration(forceHardware=True)
 
     def sweepEnable(self, swpState=None, swpType='LOG'):
-    def sweepEnable(self, swpState=None, swpType='LOG'):
         ''' Switches between sweeping (True) and CW (False) modes
 
             Args:
@@ -143,7 +142,6 @@ class Agilent_N5222A_NA(VISAInstrumentDriver, Configurable):
             if self.swpRange is not None:
                 self.setConfigParam('SENS:FREQ:STAR', self.swpRange[0], forceHardware=True)  # Hack
                 self.setConfigParam('SENS:FREQ:STOP', self.swpRange[1], forceHardware=True)  # Hack
-        return self.getConfigParam('SENS:SWE:TYPE') == swpType
         return self.getConfigParam('SENS:SWE:TYPE') == swpType
 
     def normalize(self):
