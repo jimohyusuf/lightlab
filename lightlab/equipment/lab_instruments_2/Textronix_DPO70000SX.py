@@ -80,7 +80,25 @@ class Oscilloscope:
             raise Exception('Amplitude measurement not yet set on scope')
         
         return float(amp)
-    
+
+    def get_measurement(self, channel, meas_id, meas_type='MEAN'):
+        ''' 
+            Return signal amplitude
+
+            Args:
+                channel         : scope channel
+                measurement_id  : measurement channel (1-8)
+                type            : (MEAN, INSTANTANEOUS, MAX, MINI)
+        '''
+        meas = 0
+        meas_type_curr = self.raw_query(f'Measurement:meas{meas_id}?')
+        if f'CH{channel}' in meas_type_curr:
+            meas = self.raw_query(f'Measurement:Meas{meas_id}:{meas_type}?')
+        else:
+            raise Exception('Specified measurement not yet set on scope')
+        
+        return float(meas)
+        
     def peak2peak(self, channel, meas_id=1, meas_type='MEAN'):
         ''' 
             Return signal amplitude
