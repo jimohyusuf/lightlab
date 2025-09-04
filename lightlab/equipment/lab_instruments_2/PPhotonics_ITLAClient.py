@@ -100,6 +100,25 @@ class ITLAClient:
         """
         cmd_str = f"{self.serial_number}___get_frequency_tera_hz"
         return self._request(cmd_str)
+    
+    # -------------------------------------------------------------------------
+    # Frequency
+    # -------------------------------------------------------------------------
+    def get_ftf_capability(self):
+        """
+        Get FTF capability
+        Server command: "set_frequency_tera_hz___<float>"
+        """
+        cmd_str = f"{self.serial_number}___get_ftf_capability"
+        return self._request(cmd_str)
+
+    def ftf(self, offset_mhz: int):
+        """
+        Finetune the laser frequency in MHz.
+        Server command: "ftf___<float>"
+        """
+        cmd_str = f"{self.serial_number}___ftf___{offset_mhz}"
+        return self._request(cmd_str)
 
     # -------------------------------------------------------------------------
     # Clean Sweep
@@ -203,6 +222,13 @@ class ITLAClient:
         Server command: "get_serial_number"
         """
         cmd_str = f"{self.serial_number}___get_serial_number"
+        return self._request(cmd_str)
+    
+    def get_release(self):
+        """
+        Returns the laser's release info
+        """
+        cmd_str = f"{self.serial_number}___get_release"
         return self._request(cmd_str)
 
     def port_close(self):
