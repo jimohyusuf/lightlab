@@ -2,6 +2,8 @@ import pyvisa  # Should be pyvisa-py
 import numpy as np
 import matplotlib.pyplot as plt
 
+from utils.gutils import wait
+
 VERBOSE = 0
 
 class Oscilloscope:
@@ -52,14 +54,32 @@ class Oscilloscope:
         self.raw_write('MEASUREMENT:STATISTICS:COUNT RESET')
         return
     
-    def restart_acquisition_avg_mode(self, avg_no=64):
-        # avg_no = int(self.raw_query('ACQuire:NUMAVg?'))
-        # self.raw_write(f'ACQuire:NUMAVg {avg_no+1}')
-        # self.raw_write(f'ACQuire:NUMAVg {avg_no}')
-
-        self.raw_write(f'ACQuire:NUMAVg {avg_no+1}') # hack to reset the averaging
+    def set_acquisition_mode(self, mode):
+        '''
+            modes: Sample (SAM), Average (AVE), Envelope (ENV) etc
+            
+            {SAMple|PEAKdetect|HIRes|AVErage|WFMDB|ENVelope}
+        '''
+        self.raw_write(f'ACQuire:MODe {mode}')
+        
+        return
+    
+    def set_avg_no(self, avg_no):
         self.raw_write(f'ACQuire:NUMAVg {avg_no}')
-
+        return
+    
+    def restart_acquisition_avg_mode(self, avg_no=64):
+        self.set_avg_no(avg_no+1) # hack to reset the averaging
+        wait(0.1)
+        self.set_avg_no(avg_no)
+        return
+    
+    def reset_averaging(self):
+        self.raw_query('COUnter CLEAR')
+        return
+    
+    def set_scale(self, channel, scale_mV):
+        self.raw_write(f':CH{channel}:SCA {scale_mV}E-3')
         return
     
     def amplitude(self, channel, meas_id=1, meas_type='MEAN'):
@@ -80,7 +100,11 @@ class Oscilloscope:
             raise Exception('Amplitude measurement not yet set on scope')
         
         return float(amp)
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> development
     def get_measurement(self, channel, meas_id, meas_type='MEAN'):
         ''' 
             Return signal amplitude
@@ -98,7 +122,12 @@ class Oscilloscope:
             raise Exception('Specified measurement not yet set on scope')
         
         return float(meas)
+<<<<<<< HEAD
         
+=======
+    
+    
+>>>>>>> development
     def peak2peak(self, channel, meas_id=1, meas_type='MEAN'):
         ''' 
             Return signal amplitude

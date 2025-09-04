@@ -62,7 +62,7 @@ class Aragon_BOSA_400 (VISAInstrumentDriver):
             self.write('INST:STAT:RUN 1')
 
     def startup(self):
-        print(self.ask('*IDN?'))
+        # print(self.ask('*IDN?'))
         self.__currApp = str(self.ask('INST:STAT:MODE?'))
         # print('Current application is ' + self.__currApp + '.')
         # print('Please choose application from["BOSA", "TLS", "CA", "MAIN"]')
@@ -105,7 +105,7 @@ class Aragon_BOSA_400 (VISAInstrumentDriver):
         if app is not None and app in self.__apps:
             try:
                 if app != 'MAIN':
-                    if self.__currApp is not 'MAIN':
+                    if self.__currApp != 'MAIN':
                         self.application('MAIN')
                     self.write('INST:STAT:MODE ' + str(app))
                     time.sleep(1)
