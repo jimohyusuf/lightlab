@@ -4,6 +4,7 @@ import numpy as np
 from scipy.constants import c as C0
 
 from lightlab.equipment.lab_instruments_2.PPhotonics_ITLAClient import ITLAClient
+from sklearn.semi_supervised import SelfTrainingClassifier
 
 # Helpers
 def wait(time_sec):
@@ -63,6 +64,11 @@ class Laser:
             self.laser_state.on = LASER_ON
         if wait_for_stable_power:
             self.wait_for_power_up()
+            
+        if 'PP7' in self.serial:
+            wait(5)
+            self.set_low_noise_mode(1)  # No-dither mode for PP7 lasers
+            
 
     def ensure_off(self):
         self.client.disable_laser()
@@ -71,14 +77,17 @@ class Laser:
     # -------------------------------------------------------------------------
     # Power
     # -------------------------------------------------------------------------
-    def set_power(self, power_dbm: float):
+    def set_power(self, 
+                  power_dbm: float, 
+                  turn_on=False):
         """
-        Turn laser off, set power, turn on again, wait for stable power if needed.
-        """
+        Turn laser off, set power, turn on again, wait for stable power if needed."""
+        
         self.ensure_off()
         self.client.set_power_dbm(power_dbm)
         self.laser_state.power = power_dbm
-        self.ensure_on()
+        if turn_on:
+            self.ensure_on()
 
     def get_power(self) -> float:
         """
@@ -140,24 +149,25 @@ class Laser:
     # -------------------------------------------------------------------------
     # Frequency
     # -------------------------------------------------------------------------
-    def set_wavelength(self, wavelength_nm: float, turn_off_on=True):
+    def set_wavelength(self, wavelength_nm: float, turn_on=False):
         """
         Turn laser off, set freq, turn on again.
         """
         freq_ghz = wavl_to_freq(wavelength_nm)
         freq_thz = freq_ghz / 1000.0
-        if turn_off_on:
-            self.ensure_off()
+        self.ensure_off()
             
         self.client.set_frequency_tera_hz(freq_thz)
         self.laser_state.wavelength = wavelength_nm
-        self.ensure_on()
+        
+        if turn_on:
+            self.ensure_on()
 
-    def set_frequency_ghz(self, freq_ghz: float, turn_off_on=True):
+    def set_frequency_ghz(self, freq_ghz: float, turn_on=False):
         """
         Utility method: sets frequency in GHz. The server expects THz.
         """
-        self.set_wavelength(freq_to_wavl(freq_ghz), turn_off_on)
+        self.set_wavelength(freq_to_wavl(freq_ghz), turn_on)
 
     def get_frequency_ghz(self) -> float:
         """
