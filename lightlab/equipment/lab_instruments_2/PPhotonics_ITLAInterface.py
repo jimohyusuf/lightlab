@@ -4,10 +4,9 @@ import numpy as np
 from scipy.constants import c as C0
 
 from lightlab.equipment.lab_instruments_2.PPhotonics_ITLAClient import ITLAClient
-from sklearn.semi_supervised import SelfTrainingClassifier
 
 # Helpers
-def wait(time_sec):
+def wait2(time_sec):
     time.sleep(time_sec)
     return
 
@@ -54,20 +53,24 @@ class Laser:
         power_str = self.client.read_power_dbm()
         p_val = safe_float_regex(power_str) or 7.0
         self.laser_state.power = p_val
+        
+        print(f"Connected to ITLA Laser S/N: {self.serial.strip()} at {address}. Initial freq: {freq_ghz:.3f} GHz, power: {p_val:.3f} dBm")
 
     # -------------------------------------------------------------------------
     # Laser On/Off
     # -------------------------------------------------------------------------
-    def ensure_on(self, wait_for_stable_power=True):
+    def ensure_on(self, wait=True):
         if self.laser_state.on == LASER_OFF:
             self.client.enable_laser()
             self.laser_state.on = LASER_ON
-        if wait_for_stable_power:
+        if wait:
             self.wait_for_power_up()
             
         if 'PP7' in self.serial:
-            wait(5)
+            wait2(4)
             self.set_low_noise_mode(1)  # No-dither mode for PP7 lasers
+            wait2(4)
+            self.set_low_noise_mode(1)  # Switch back to standard mode after stabilization
             
 
     def ensure_off(self):

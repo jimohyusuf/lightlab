@@ -1,8 +1,8 @@
+from time import sleep
+
 import pyvisa  # Should be pyvisa-py
 import numpy as np
 import matplotlib.pyplot as plt
-
-from utils.gutils import wait
 
 VERBOSE = 0
 
@@ -70,7 +70,7 @@ class Oscilloscope:
     
     def restart_acquisition_avg_mode(self, avg_no=64):
         self.set_avg_no(avg_no+1) # hack to reset the averaging
-        wait(0.1)
+        sleep(0.1)
         self.set_avg_no(avg_no)
         return
     
