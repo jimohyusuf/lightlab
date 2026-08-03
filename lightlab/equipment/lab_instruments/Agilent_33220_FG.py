@@ -26,7 +26,7 @@ class Agilent_33220_FG(VISAInstrumentDriver, Configurable):
     def startup(self):
         pass
         # self.write('D0')  # enable output
-
+    
     def enable(self, enaState=None):
         wordMap = {True: 'ON', False: 'OFF'}
         trueWords = [True, 1, '1', 'ON']
@@ -38,21 +38,30 @@ class Agilent_33220_FG(VISAInstrumentDriver, Configurable):
         if newFreq is not None:
             self.setConfigParam('FREQ', newFreq)
         return self.getConfigParam('FREQ')
-
     def waveform(self, newWave=None):
-        ''' Available tokens are (with optional part in brackets):
-            'dc', 'sin[usoid]', 'squ[are]', 'ramp', 'puls[e]', 'nois[e]', 'user'
+        '''
+        Available tokens are (with optional part in brackets):
+        'dc', 'sin[usoid]', 'squ[are]', 'ramp', 'puls[e]', 'nois[e]', 'user'
         '''
         tokens = {'dc', 'sinusoid', 'ramp', 'square', 'pulse', 'noise', 'user'}
         
         if newWave is not None:
+            user_wave = newWave.lower()
+            matched_tok = None
+            
             for tok in tokens:
-                if newWave.lower().startswith(tok):
-                    self.setConfigParam('FUNC', tok.upper())
+                # FIX: Check if the full hardware token starts with your input
+                if tok.startswith(user_wave):
+                    matched_tok = tok
                     break
+                    
+            if matched_tok is not None:
+                self.write(f'FUNC {matched_tok.upper()}')
             else:
-                raise ValueError(newWave + ' is not a valid waveform: ' + str(tokens))
-        return self.getConfigParam('FUNC').lower()
+                raise ValueError(f"{newWave} is not a valid waveform: {tokens}")
+                
+        # Also fixed the f-string return format here
+        return f'waveform set to {newWave}'
 
     def setArbitraryWaveform(self, wfm, name='VOLATILE'):
         ''' Arbitrary waveform
@@ -149,7 +158,8 @@ class Agilent_33220_FG(VISAInstrumentDriver, Configurable):
         
         '''
         if enabled:
-            self.write(f'BURSt:NCYCle {cycles}')
+            self.write('BURSt:STATe OFF')
+            self.write(f'BURSt:NCYC {cycles}')
             self.write('BURSt:STATe ON')
         else:
             self.write('BURSt:STATe OFF')
